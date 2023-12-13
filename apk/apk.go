@@ -45,6 +45,19 @@ func OpenFile(filename string) (apk *Apk, err error) {
 	return
 }
 
+func OpenFileByFile(f *os.File) (a *Apk, err error) {
+	fi, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+	a, err = OpenZipReader(f, fi.Size())
+	if err != nil {
+		return nil, err
+	}
+	a.f = f
+	return
+}
+
 // OpenZipReader has same arguments like zip.NewReader
 func OpenZipReader(r io.ReaderAt, size int64) (*Apk, error) {
 	zipreader, err := zip.NewReader(r, size)
